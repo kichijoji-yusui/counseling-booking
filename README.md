@@ -90,7 +90,7 @@
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbw4OMhFZgDq-xxB3sJmGXk-GCf-0Ie39VyncA3r3Mo3IxRnkpz396I0Vlkd-F2p-sAIJQ/exec"; 
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwEU4ppjx787YHLO_kO9hdaRUK0qBOti2uwiZbuuW7_Be5qdFcX3XXlkxVRHCwrCTDigg/exec"; 
     const ADMIN_PASS = "Fujimura2026"; // 管理用パスワード
 
     let bookedData = [];
