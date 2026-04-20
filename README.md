@@ -3,205 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>カウンセリング予約システム</title>
+    <title>カウンセリング予約</title>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <style>
-        *{box-sizing:border-box;margin:0;padding:0}
-        body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP',sans-serif;background:#f5f5f3;color:#1a1a1a;font-size:16px;line-height:1.6}
-        .wrap{max-width:540px;margin:0 auto;padding:1.5rem 1rem 4rem}
-        .screen{display:none}
-        .screen.active{display:block}
-        .card{background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
-        .page-title{font-size:18px;font-weight:700;margin-bottom:4px;color:#185FA5}
-        .page-sub{font-size:13px;color:#888;margin-bottom:1.25rem}
-        .field{margin-bottom:1rem}
-        .field label{display:block;font-size:13px;font-weight:600;margin-bottom:5px}
-        .req{color:#e24b4a;margin-left:4px}
-        input, select, textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:16px}
-        .btn{padding:12px 24px;border-radius:8px;border:1px solid #ddd;cursor:pointer;font-weight:600;transition:0.2s}
-        .btn-p{background:#185FA5;color:#fff;border:none;width:100%}
-        .btn-d{background:#fee;color:#c00;border:1px solid #fcc;font-size:12px;padding:4px 8px}
-        .chips{display:flex;flex-wrap:wrap;gap:8px}
-        .chip{padding:8px 16px;border:1px solid #ddd;border-radius:20px;font-size:14px;cursor:pointer;background:#fff}
-        .chip.on{background:#e6f0fb;border-color:#185FA5;color:#185FA5}
-        .admin-item{border-bottom:1px solid #eee;padding:10px 0;display:flex;justify-content:space-between;align-items:center}
-        #qrcode-canvas{margin:20px auto;display:block}
+        :root { --main: #185FA5; --bg: #f5f5f5; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 20px; line-height: 1.6; }
+        .container { max-width: 500px; margin: 0 auto; }
+        .card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h2 { color: var(--main); font-size: 1.2rem; margin-top: 0; }
+        label { display: block; font-size: 0.9rem; font-weight: bold; margin-top: 15px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        .btn-main { background: var(--main); color: #fff; }
+        .btn-sub { background: #eee; color: #333; margin-top: 10px; }
+        .btn-danger { background: #ffebee; color: #c62828; font-size: 0.8rem; padding: 5px; width: auto; margin: 0; }
+        .screen { display: none; }
+        .active { display: block; }
+        .admin-item { border-bottom: 1px solid #eee; padding: 10px 0; display: flex; justify-content: space-between; align-items: center; }
+        #qr-canvas { display: block; margin: 20px auto; }
     </style>
 </head>
 <body>
-<div class="wrap">
 
-    <div id="v0" class="screen active">
+<div class="container">
+    <div id="view-form" class="screen active">
         <div class="card">
-            <p class="page-title">カウンセリング予約</p>
-            <p class="page-sub">2026年度 相談窓口</p>
-            <div class="field">
-                <label>申込者区分<span class="req">*</span></label>
-                <div class="chips">
-                    <div class="chip" id="type-s" onclick="setType('student')">生徒本人</div>
-                    <div class="chip" id="type-p" onclick="setType('parent')">保護者</div>
-                </div>
-            </div>
-            <button class="btn btn-p" onclick="nextToInfo()">次へ進む</button>
+            <h2>カウンセリング予約フォーム</h2>
+            <label>区分</label>
+            <select id="field-type">
+                <option value="student">生徒本人</option>
+                <option value="parent">保護者</option>
+            </select>
+            
+            <label>お名前</label>
+            <input type="text" id="field-name" placeholder="氏名を入力">
+            
+            <label>学年クラス / 連絡先</label>
+            <input type="text" id="field-info" placeholder="例：1年A組 / 090-xxxx-xxxx">
+            
+            <label>希望日時</label>
+            <input type="datetime-local" id="field-date">
+            
+            <button class="btn btn-main" onclick="sendBooking()">予約を送信する</button>
         </div>
-        <div style="text-align:center;margin-top:20px">
-            <button class="btn" onclick="showQRScreen()">QRコードを表示</button>
-            <button class="btn" style="margin-left:10px" onclick="showAdminLogin()">管理画面</button>
+        <button class="btn btn-sub" onclick="showQR()">QRコードを表示</button>
+        <button class="btn btn-sub" onclick="loginAdmin()">管理画面（先生用）</button>
+    </div>
+
+    <div id="view-success" class="screen">
+        <div class="card" style="text-align: center;">
+            <h2>予約完了</h2>
+            <p>内容を送信しました。確認をお待ちください。</p>
+            <button class="btn btn-main" onclick="location.reload()">戻る</button>
         </div>
     </div>
 
-    <div id="v1" class="screen">
+    <div id="view-qr" class="screen">
+        <div class="card" style="text-align: center;">
+            <h2>掲示用QRコード</h2>
+            <canvas id="qr-canvas"></canvas>
+            <button class="btn btn-main" onclick="showView('view-form')">閉じる</button>
+        </div>
+    </div>
+
+    <div id="view-admin" class="screen">
         <div class="card">
-            <p class="page-title">基本情報の入力</p>
-            <div id="form-fields"></div>
-            <div class="field">
-                <label>希望日時<span class="req">*</span></label>
-                <input type="datetime-local" id="reserve-date">
-            </div>
-            <button class="btn btn-p" onclick="submitBooking()">予約を確定する</button>
-            <button class="btn" style="width:100%;margin-top:10px" onclick="showScreen('v0')">戻る</button>
-        </div>
-    </div>
-
-    <div id="v2" class="screen">
-        <div class="card" style="text-align:center">
-            <p class="page-title">予約が完了しました</p>
-            <p>内容を確認し、後ほどご連絡いたします。</p>
-            <button class="btn btn-p" style="margin-top:20px" onclick="location.reload()">トップに戻る</button>
-        </div>
-    </div>
-
-    <div id="v_qr" class="screen">
-        <div class="card" style="text-align:center">
-            <p class="page-title">予約フォームQRコード</p>
-            <canvas id="qrcode-canvas"></canvas>
-            <p style="font-size:12px;color:#888">この画面を印刷・掲示して使用してください</p>
-            <button class="btn" style="margin-top:20px" onclick="showScreen('v0')">閉じる</button>
-        </div>
-    </div>
-
-    <div id="v_admin" class="screen">
-        <div class="card">
-            <p class="page-title">予約管理パネル</p>
+            <h2>予約一覧（管理者）</h2>
             <div id="admin-list">読み込み中...</div>
-            <button class="btn" style="width:100%;margin-top:20px" onclick="showScreen('v0')">ログアウト</button>
+            <button class="btn btn-sub" onclick="showView('view-form')">戻る</button>
         </div>
     </div>
-
 </div>
 
 <script>
-// ==========================================
-// 設定エリア
-// ==========================================
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxGJcx681iJB_vA-2cd3R-Rt0LeKmBtAB51xzx5BxUQcYv4va9QPRtOJ8du-2BzMdfujg/exec"; 
-const ADMIN_PW = "Fujimura2026"; 
-// ==========================================
+    // ★ここを書き換えてください★
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbw8_jLAkqQOijA5LhQQk2H4LTbfv179cfKQoElG_dt8Ez9t_poeEPPGfqm1w6RstsS9gg/exec";
+    const ADMIN_PASS = "Fujimura2026";
 
-let selectedType = "";
-
-function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-}
-
-function setType(type) {
-    selectedType = type;
-    document.getElementById('type-s').classList.toggle('on', type === 'student');
-    document.getElementById('type-p').classList.toggle('on', type === 'parent');
-}
-
-function nextToInfo() {
-    if(!selectedType) return alert("区分を選択してください");
-    const container = document.getElementById('form-fields');
-    if(selectedType === 'student') {
-        container.innerHTML = `
-            <div class="field"><label>氏名</label><input id="name" placeholder="山田 太郎"></div>
-            <div class="field"><label>学年クラス</label><input id="info" placeholder="1年A組"></div>
-        `;
-    } else {
-        container.innerHTML = `
-            <div class="field"><label>保護者氏名</label><input id="name" placeholder="山田 花子"></div>
-            <div class="field"><label>お子様の名前・クラス</label><input id="info" placeholder="1年A組 山田太郎"></div>
-        `;
+    function showView(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
     }
-    showScreen('v1');
-}
 
-// 予約送信
-async function submitBooking() {
-    const name = document.getElementById('name').value;
-    const date = document.getElementById('reserve-date').value;
-    if(!name || !date) return alert("すべて入力してください");
+    // 送信処理
+    async function sendBooking() {
+        const data = {
+            type: document.getElementById('field-type').value,
+            name: document.getElementById('field-name').value,
+            info: document.getElementById('field-info').value,
+            date: document.getElementById('field-date').value
+        };
+        if(!data.name || !data.date) return alert("必須項目を入力してください");
 
-    const payload = {
-        action: "add",
-        type: selectedType,
-        name: name,
-        info: document.getElementById('info').value,
-        date: date
-    };
+        const btn = document.querySelector('.btn-main');
+        btn.disabled = true;
+        btn.innerText = "送信中...";
 
-    try {
-        await fetch(GAS_URL, {
-            method: "POST",
-            body: JSON.stringify(payload)
-        });
-        showScreen('v2');
-    } catch(e) {
-        alert("送信に失敗しました");
+        try {
+            await fetch(GAS_URL, { method: "POST", body: JSON.stringify(data) });
+            showView('view-success');
+        } catch(e) {
+            alert("エラーが発生しました");
+            btn.disabled = false;
+            btn.innerText = "予約を送信する";
+        }
     }
-}
 
-// QRコード表示
-function showQRScreen() {
-    showScreen('v_qr');
-    QRCode.toCanvas(document.getElementById('qrcode-canvas'), window.location.href, { width: 200 });
-}
-
-// 管理画面表示
-function showAdminLogin() {
-    const pw = prompt("管理者パスワードを入力してください");
-    if(pw === ADMIN_PW) {
-        loadAdminData();
-        showScreen('v_admin');
-    } else {
-        alert("パスワードが違います");
+    // QR表示
+    function showQR() {
+        showView('view-qr');
+        QRCode.toCanvas(document.getElementById('qr-canvas'), window.location.href, { width: 250 });
     }
-}
 
-async function loadAdminData() {
-    const list = document.getElementById('admin-list');
-    list.innerHTML = "読み込み中...";
-    try {
-        const res = await fetch(`${GAS_URL}?action=getAll`);
-        const data = await res.json();
-        list.innerHTML = data.length ? "" : "予約はありません";
-        data.forEach(item => {
-            const div = document.createElement('div');
-            div.className = "admin-item";
-            div.innerHTML = `
-                <div>
-                    <div style="font-weight:bold">${item.name} (${item.date})</div>
-                    <div style="font-size:12px;color:#666">${item.info}</div>
-                </div>
-                <button class="btn btn-d" onclick="deleteItem(${item.id})">削除</button>
-            `;
-            list.appendChild(div);
-        });
-    } catch(e) {
-        list.innerHTML = "データの取得に失敗しました。";
+    // 管理画面ログイン
+    function loginAdmin() {
+        const pw = prompt("パスワードを入力");
+        if(pw === ADMIN_PASS) {
+            showView('view-admin');
+            refreshAdminList();
+        } else {
+            alert("認証失敗");
+        }
     }
-}
 
-async function deleteItem(id) {
-    if(!confirm("この予約を削除しますか？")) return;
-    await fetch(GAS_URL, {
-        method: "POST",
-        body: JSON.stringify({ action: "delete", id: id })
-    });
-    loadAdminData();
-}
+    // 管理リスト更新
+    async function refreshAdminList() {
+        const listDiv = document.getElementById('admin-list');
+        listDiv.innerText = "取得中...";
+        try {
+            const res = await fetch(GAS_URL + "?action=getAll");
+            const data = await res.json();
+            listDiv.innerHTML = "";
+            data.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'admin-item';
+                row.innerHTML = `
+                    <div>
+                        <small>${item.date}</small><br>
+                        <strong>${item.name}</strong> (${item.type})
+                    </div>
+                    <button class="btn btn-danger" onclick="deleteItem(${item.rowNum})">削除</button>
+                `;
+                listDiv.appendChild(row);
+            });
+        } catch(e) {
+            listDiv.innerText = "データがありません";
+        }
+    }
+
+    // 削除処理
+    async function deleteItem(num) {
+        if(!confirm("削除しますか？")) return;
+        await fetch(GAS_URL, { method: "POST", body: JSON.stringify({action: 'delete', rowNum: num}) });
+        refreshAdminList();
+    }
 </script>
+
 </body>
 </html>
