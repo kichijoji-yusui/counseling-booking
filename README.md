@@ -94,7 +94,7 @@
 // ==========================================
 // 設定エリア
 // ==========================================
-const GAS_URL = "https://script.google.com/macros/s/AKfycbzIJcRa2dEkD45nGVwZ3jAy5hqdSUbGFpHlBvF5OoAVUvgsSCQQRx_pjGO2CNXstYrxHA/exec"; 
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxGJcx681iJB_vA-2cd3R-Rt0LeKmBtAB51xzx5BxUQcYv4va9QPRtOJ8du-2BzMdfujg/exec"; 
 const ADMIN_PW = "Fujimura2026"; 
 // ==========================================
 
