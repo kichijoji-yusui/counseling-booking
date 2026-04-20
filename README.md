@@ -1,734 +1,207 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>カウンセリング予約</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP',sans-serif;background:#f5f5f3;color:#1a1a1a;font-size:16px;line-height:1.6}
-.wrap{max-width:540px;margin:0 auto;padding:1.5rem 1rem 4rem}
-.screen{display:none}.screen.active{display:block}
-.card{background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
-.page-title{font-size:18px;font-weight:500;margin-bottom:4px}
-.page-sub{font-size:13px;color:#888;margin-bottom:1.25rem}
-.steps{display:flex;align-items:center;gap:6px;margin-bottom:1.25rem}
-.sn{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;background:#f0f0ec;color:#888;border:1px solid #ddd;flex-shrink:0}
-.sn.active{background:#185FA5;color:#fff;border-color:transparent}
-.sn.done{background:#e6f4d7;color:#2d6a0a;border-color:transparent}
-.sl{flex:1;height:1px;background:#e0e0dc}
-.sec{font-size:11px;font-weight:600;color:#aaa;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0ec}
-.field{margin-bottom:.875rem}
-.field label{display:block;font-size:13px;font-weight:500;color:#555;margin-bottom:5px}
-.req{color:#e24b4a}
-.field input,.field select,.field textarea{width:100%;padding:9px 11px;border:1px solid #ddd;border-radius:8px;font-size:14px;color:#1a1a1a;background:#fff;appearance:none;-webkit-appearance:none}
-.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#185FA5}
-.field textarea{min-height:60px;resize:vertical}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.chip{padding:6px 13px;border:1px solid #ddd;border-radius:20px;font-size:13px;cursor:pointer;color:#555;background:#fff;user-select:none;-webkit-user-select:none}
-.chip.on{background:#e6f0fb;border-color:#378ADD;color:#0C447C}
-.chip-gl{font-size:11px;color:#aaa;font-weight:600;margin-top:10px;margin-bottom:2px;width:100%}
-.btn-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;gap:8px}
-.btn{padding:10px 20px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:1px solid #ddd;background:#fff;color:#1a1a1a}
-.btn-p{background:#185FA5;color:#fff;border-color:transparent}
-.btn-p:active{background:#0f4a8a}
-.btn-d{background:#e24b4a;color:#fff;border-color:transparent;font-size:13px;padding:7px 14px}
-.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
-.cal-nav button{background:#fff;border:1px solid #ddd;border-radius:8px;padding:5px 14px;font-size:14px;cursor:pointer;color:#1a1a1a}
-.cal-nav button:disabled{opacity:.35;cursor:not-allowed}
-.cal-wrap{border:1px solid #e8e8e4;border-radius:12px;overflow:hidden;margin-bottom:1rem}
-.cal-head{display:grid;grid-template-columns:repeat(7,1fr);background:#f8f8f5}
-.cal-dl{text-align:center;font-size:11px;color:#888;padding:8px 0;font-weight:600}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
-.cal-c{text-align:center;padding:9px 0;font-size:13px;border-top:1px solid #f0f0ec;color:#ccc}
-.cal-c.avail{color:#185FA5;cursor:pointer;font-weight:600;background:#fff}
-.cal-c.avail:hover,.cal-c.avail:active{background:#e6f0fb}
-.cal-c.sel{background:#185FA5;color:#fff;font-weight:600}
-.cal-c.full{background:#f8f8f5;color:#bbb;font-size:11px}
-.slots{display:flex;gap:8px;flex-wrap:wrap;margin-top:.75rem}
-.slot{padding:8px 16px;border:1px solid #ddd;border-radius:8px;font-size:14px;cursor:pointer;color:#1a1a1a;background:#fff}
-.slot:hover{background:#e6f0fb;border-color:#378ADD;color:#0C447C}
-.slot.sel{background:#185FA5;color:#fff;border-color:transparent}
-.slot.full{background:#f8f8f5;color:#bbb;cursor:not-allowed;text-decoration:line-through}
-.consent-box{background:#f8f8f5;border-radius:8px;padding:.875rem;font-size:12px;color:#666;line-height:1.7;margin-bottom:.75rem}
-.ok-icon{width:52px;height:52px;background:#e6f4d7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
-.ok-icon svg{width:26px;height:26px;stroke:#2d6a0a;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.conf-row{display:flex;padding:8px 0;border-bottom:1px solid #f0f0ec;font-size:13px}
-.conf-l{color:#888;width:100px;flex-shrink:0}
-.conf-v{color:#1a1a1a;font-weight:500;word-break:break-all}
-.err{font-size:12px;color:#e24b4a;margin-top:5px}
-.tabs{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
-.tab{padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid #ddd;background:#fff;color:#888}
-.tab.on{background:#185FA5;color:#fff;border-color:transparent;font-weight:500}
-.aitem{border:1px solid #e8e8e4;border-radius:10px;margin-bottom:8px;overflow:hidden}
-.aitem-head{padding:11px 13px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;cursor:pointer;background:#fff}
-.aitem-head:hover{background:#f8f8f5}
-.aitem-body{padding:10px 13px;border-top:1px solid #f0f0ec;background:#f8f8f5;display:none}
-.aitem-body.open{display:block}
-.aitem-row{display:flex;font-size:12px;padding:3px 0;gap:8px}
-.aitem-lbl{color:#888;width:88px;flex-shrink:0}
-.aitem-val{color:#1a1a1a}
-.badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;white-space:nowrap;flex-shrink:0}
-.badge-new{background:#e6f0fb;color:#0C447C}
-.badge-done{background:#e6f4d7;color:#2d6a0a}
-.empty-msg{text-align:center;padding:2.5rem;font-size:13px;color:#aaa}
-.pw-wrap{display:flex;flex-direction:column;align-items:center;padding:2rem;gap:1rem}
-.qr-area{display:flex;flex-direction:column;align-items:center;gap:12px;padding:1.25rem;background:#f8f8f5;border-radius:10px}
-.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
-.stat-card{background:#f8f8f5;border-radius:8px;padding:.875rem;text-align:center}
-.stat-num{font-size:26px;font-weight:500;color:#1a1a1a}
-.stat-lbl{font-size:11px;color:#888;margin-top:2px}
-.loading{text-align:center;padding:1.5rem;font-size:13px;color:#aaa}
-.setup-box{background:#fff7e6;border:1px solid #f5c875;border-radius:10px;padding:1rem;margin-bottom:1rem;font-size:13px;line-height:1.7;color:#7a5500}
-.setup-box strong{display:block;margin-bottom:4px;font-size:14px}
-.setup-box code{background:#ffeec0;padding:1px 5px;border-radius:4px;font-family:monospace;font-size:12px;word-break:break-all}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カウンセリング予約システム</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP',sans-serif;background:#f5f5f3;color:#1a1a1a;font-size:16px;line-height:1.6}
+        .wrap{max-width:540px;margin:0 auto;padding:1.5rem 1rem 4rem}
+        .screen{display:none}
+        .screen.active{display:block}
+        .card{background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+        .page-title{font-size:18px;font-weight:700;margin-bottom:4px;color:#185FA5}
+        .page-sub{font-size:13px;color:#888;margin-bottom:1.25rem}
+        .field{margin-bottom:1rem}
+        .field label{display:block;font-size:13px;font-weight:600;margin-bottom:5px}
+        .req{color:#e24b4a;margin-left:4px}
+        input, select, textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:16px}
+        .btn{padding:12px 24px;border-radius:8px;border:1px solid #ddd;cursor:pointer;font-weight:600;transition:0.2s}
+        .btn-p{background:#185FA5;color:#fff;border:none;width:100%}
+        .btn-d{background:#fee;color:#c00;border:1px solid #fcc;font-size:12px;padding:4px 8px}
+        .chips{display:flex;flex-wrap:wrap;gap:8px}
+        .chip{padding:8px 16px;border:1px solid #ddd;border-radius:20px;font-size:14px;cursor:pointer;background:#fff}
+        .chip.on{background:#e6f0fb;border-color:#185FA5;color:#185FA5}
+        .admin-item{border-bottom:1px solid #eee;padding:10px 0;display:flex;justify-content:space-between;align-items:center}
+        #qrcode-canvas{margin:20px auto;display:block}
+    </style>
 </head>
 <body>
 <div class="wrap">
- 
-  <!-- ===== セットアップ案内（GAS URL未設定時のみ表示） ===== -->
-  <div id="setup-notice" style="display:none">
-    <div class="setup-box">
-      <strong>⚙️ セットアップが必要です</strong>
-      このファイルを動かすには、GoogleスプレッドシートのURLを設定してください。<br>
-      下の「セットアップ手順」をお読みください。
+
+    <div id="v0" class="screen active">
+        <div class="card">
+            <p class="page-title">カウンセリング予約</p>
+            <p class="page-sub">2026年度 相談窓口</p>
+            <div class="field">
+                <label>申込者区分<span class="req">*</span></label>
+                <div class="chips">
+                    <div class="chip" id="type-s" onclick="setType('student')">生徒本人</div>
+                    <div class="chip" id="type-p" onclick="setType('parent')">保護者</div>
+                </div>
+            </div>
+            <button class="btn btn-p" onclick="nextToInfo()">次へ進む</button>
+        </div>
+        <div style="text-align:center;margin-top:20px">
+            <button class="btn" onclick="showQRScreen()">QRコードを表示</button>
+            <button class="btn" style="margin-left:10px" onclick="showAdminLogin()">管理画面</button>
+        </div>
     </div>
-  </div>
- 
-  <!-- ===== 予約フォーム ===== -->
-  <div id="screen-booking" class="screen active">
- 
-    <div id="v0" class="view active" style="display:block">
-      <div class="card">
-        <p class="page-title">カウンセリング予約</p>
-        <p class="page-sub">2026年4月〜6月　毎週土曜日</p>
-        <div class="field" style="margin-bottom:1rem">
-          <label>申込者を選んでください <span class="req">*</span></label>
-          <div class="chips">
-            <div class="chip" id="chip-s" onclick="pickType('student')">生徒本人</div>
-            <div class="chip" id="chip-p" onclick="pickType('parent')">保護者</div>
-          </div>
-          <div class="err" id="err-type" style="display:none">選択してください</div>
+
+    <div id="v1" class="screen">
+        <div class="card">
+            <p class="page-title">基本情報の入力</p>
+            <div id="form-fields"></div>
+            <div class="field">
+                <label>希望日時<span class="req">*</span></label>
+                <input type="datetime-local" id="reserve-date">
+            </div>
+            <button class="btn btn-p" onclick="submitBooking()">予約を確定する</button>
+            <button class="btn" style="width:100%;margin-top:10px" onclick="showScreen('v0')">戻る</button>
         </div>
-        <p style="font-size:13px;color:#888;line-height:1.7">入力内容は担当カウンセラーのみ確認します。どうぞ気軽にご相談ください。</p>
-      </div>
-      <div style="text-align:right;margin-bottom:.5rem">
-        <button class="btn" style="font-size:12px;padding:6px 13px" onclick="showQR()">QRコードを表示</button>
-      </div>
-      <div class="btn-row" style="justify-content:flex-end">
-        <button class="btn btn-p" onclick="step0next()">次へ</button>
-      </div>
     </div>
- 
-    <div id="v1" style="display:none">
-      <div class="steps"><div class="sn done">1</div><div class="sl"></div><div class="sn active">2</div><div class="sl"></div><div class="sn">3</div><div class="sl"></div><div class="sn">4</div></div>
- 
-      <div class="card" id="sf">
-        <div class="sec">生徒の基本情報</div>
-        <div class="row2">
-          <div class="field"><label>氏名 <span class="req">*</span></label><input id="s-name" type="text" placeholder="山田 太郎"></div>
-          <div class="field"><label>ふりがな <span class="req">*</span></label><input id="s-kana" type="text" placeholder="やまだ たろう"></div>
+
+    <div id="v2" class="screen">
+        <div class="card" style="text-align:center">
+            <p class="page-title">予約が完了しました</p>
+            <p>内容を確認し、後ほどご連絡いたします。</p>
+            <button class="btn btn-p" style="margin-top:20px" onclick="location.reload()">トップに戻る</button>
         </div>
-        <div class="row2">
-          <div class="field"><label>学年 <span class="req">*</span></label>
-            <select id="s-grade"><option value="">選択</option><option>1年</option><option>2年</option><option>3年</option></select>
-          </div>
-          <div class="field"><label>クラス <span class="req">*</span></label>
-            <select id="s-class"><option value="">選択</option><option>1組</option><option>2組</option><option>3組</option><option>4組</option></select>
-          </div>
-        </div>
-        <div class="field"><label>出席番号</label><input id="s-num" type="text" placeholder="例：15"></div>
-      </div>
- 
-      <div class="card" id="pf" style="display:none">
-        <div class="sec">保護者情報</div>
-        <div class="row2">
-          <div class="field"><label>保護者氏名 <span class="req">*</span></label><input id="p-name" type="text" placeholder="山田 花子"></div>
-          <div class="field"><label>ふりがな <span class="req">*</span></label><input id="p-kana" type="text" placeholder="やまだ はなこ"></div>
-        </div>
-        <div class="row2">
-          <div class="field"><label>続柄 <span class="req">*</span></label>
-            <select id="p-rel"><option value="">選択</option><option>父</option><option>母</option><option>祖父</option><option>祖母</option><option>その他</option></select>
-          </div>
-          <div class="field"><label>連絡先（電話） <span class="req">*</span></label><input id="p-tel" type="tel" placeholder="090-0000-0000"></div>
-        </div>
-        <div class="field"><label>連絡先（メール）</label><input id="p-mail" type="email" placeholder="example@email.com"></div>
-        <div class="field"><label>連絡可能な時間帯 <span class="req">*</span></label>
-          <div class="chips" id="p-times">
-            <div class="chip" onclick="toggleChip(this)">平日午前</div>
-            <div class="chip" onclick="toggleChip(this)">平日昼</div>
-            <div class="chip" onclick="toggleChip(this)">平日夕方（16時〜）</div>
-            <div class="chip" onclick="toggleChip(this)">土曜</div>
-          </div>
-        </div>
-        <div class="sec" style="margin-top:1rem">お子さんの情報</div>
-        <div class="row2">
-          <div class="field"><label>お子さんのお名前 <span class="req">*</span></label><input id="c-name" type="text" placeholder="山田 太郎"></div>
-          <div class="field"><label>学年・クラス <span class="req">*</span></label><input id="c-class" type="text" placeholder="例：3年2組"></div>
-        </div>
-        <div class="field"><label>お子さんは面談を知っていますか <span class="req">*</span></label>
-          <div class="chips" id="c-know">
-            <div class="chip" onclick="pickOne(this,'c-know')">知っている</div>
-            <div class="chip" onclick="pickOne(this,'c-know')">知らない</div>
-            <div class="chip" onclick="pickOne(this,'c-know')">これから話す予定</div>
-          </div>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn" onclick="showStep('v0')">戻る</button>
-        <button class="btn btn-p" onclick="step1next()">次へ</button>
-      </div>
     </div>
- 
-    <div id="v2" style="display:none">
-      <div class="steps"><div class="sn done">1</div><div class="sl"></div><div class="sn done">2</div><div class="sl"></div><div class="sn active">3</div><div class="sl"></div><div class="sn">4</div></div>
-      <div class="card">
-        <div class="sec">相談内容</div>
-        <div class="field">
-          <label>悩みの種類 <span class="req">*</span>　<span style="font-size:11px;color:#aaa;font-weight:400">複数選択可</span></label>
-          <div class="chips" id="consult-types">
-            <div class="chip-gl">対人関係</div>
-            <div class="chip" onclick="toggleChip(this)">① 家族</div>
-            <div class="chip" onclick="toggleChip(this)">② 友人</div>
-            <div class="chip" onclick="toggleChip(this)">③ 教師</div>
-            <div class="chip" onclick="toggleChip(this)">④ 恋愛</div>
-            <div class="chip-gl">その他</div>
-            <div class="chip" onclick="toggleChip(this)">⑤ 学習・進路</div>
-            <div class="chip" onclick="toggleChip(this)">⑥ 生活習慣</div>
-            <div class="chip" onclick="toggleChip(this)">⑦ 自分の性格・特性</div>
-            <div class="chip" onclick="toggleChip(this)">⑧ 心の健康</div>
-            <div class="chip" id="chip-other-cat" onclick="toggleChipOther(this)">その他</div>
-          </div>
-          <div class="err" id="err-consult" style="display:none">1つ以上選択してください</div>
+
+    <div id="v_qr" class="screen">
+        <div class="card" style="text-align:center">
+            <p class="page-title">予約フォームQRコード</p>
+            <canvas id="qrcode-canvas"></canvas>
+            <p style="font-size:12px;color:#888">この画面を印刷・掲示して使用してください</p>
+            <button class="btn" style="margin-top:20px" onclick="showScreen('v0')">閉じる</button>
         </div>
-        <div class="field" id="other-note-field" style="display:none">
-          <label>その他の内容（簡単に）</label>
-          <input id="other-note" type="text" placeholder="例：部活のこと、先生との関係など">
-        </div>
-        <div class="field"><label>面談形式の希望</label>
-          <div class="chips" id="format">
-            <div class="chip" onclick="pickOne(this,'format')">対面</div>
-            <div class="chip" onclick="pickOne(this,'format')">オンライン</div>
-            <div class="chip" onclick="pickOne(this,'format')">どちらでも</div>
-          </div>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn" onclick="showStep('v1')">戻る</button>
-        <button class="btn btn-p" onclick="step2next()">次へ</button>
-      </div>
     </div>
- 
-    <div id="v3" style="display:none">
-      <div class="steps"><div class="sn done">1</div><div class="sl"></div><div class="sn done">2</div><div class="sl"></div><div class="sn done">3</div><div class="sl"></div><div class="sn active">4</div></div>
-      <div class="card">
-        <div class="sec">希望日時を選択</div>
-        <p style="font-size:13px;color:#888;margin-bottom:.875rem">土曜日のみ予約可能です（6月末まで）。取り消し線の枠は予約済みです。</p>
-        <div class="cal-nav">
-          <button id="btn-prev" onclick="prevMonth()">＜</button>
-          <span style="font-size:14px;font-weight:500" id="cal-month-label"></span>
-          <button id="btn-next" onclick="nextMonth()">＞</button>
+
+    <div id="v_admin" class="screen">
+        <div class="card">
+            <p class="page-title">予約管理パネル</p>
+            <div id="admin-list">読み込み中...</div>
+            <button class="btn" style="width:100%;margin-top:20px" onclick="showScreen('v0')">ログアウト</button>
         </div>
-        <div class="cal-wrap">
-          <div class="cal-head">
-            <div class="cal-dl" style="color:#e24b4a">日</div>
-            <div class="cal-dl">月</div><div class="cal-dl">火</div><div class="cal-dl">水</div><div class="cal-dl">木</div><div class="cal-dl">金</div>
-            <div class="cal-dl" style="color:#185FA5">土</div>
-          </div>
-          <div class="cal-grid" id="cal"></div>
-        </div>
-        <div id="slot-area" style="display:none">
-          <p style="font-size:13px;font-weight:500;margin-bottom:6px" id="slot-label"></p>
-          <div class="slots" id="slots"></div>
-        </div>
-        <div style="margin-top:1.25rem;border-top:1px solid #f0f0ec;padding-top:1rem">
-          <div class="consent-box">入力いただいた情報は、カウンセリングの実施・記録のみに使用します。お子さんの安全に関わる場合（虐待の疑い等）は、法令に基づき関係機関に情報を提供することがあります。</div>
-          <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="consent" style="margin-top:3px;width:auto"> 個人情報の取り扱いに同意します</label>
-          <div class="err" id="err-submit" style="display:none;margin-top:6px"></div>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn" onclick="showStep('v2')">戻る</button>
-        <button class="btn btn-p" id="submit-btn" onclick="submitBooking()">予約を確定する</button>
-      </div>
     </div>
- 
-    <div id="v4" style="display:none">
-      <div class="card" style="text-align:center;padding:2rem">
-        <div class="ok-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-        <p style="font-size:17px;font-weight:500;margin-bottom:6px">予約が完了しました</p>
-        <p style="font-size:13px;color:#888;margin-bottom:1.25rem">内容を確認次第、ご連絡いたします。</p>
-        <div id="confirm-detail" style="margin-bottom:1.5rem;text-align:left"></div>
-        <button class="btn" onclick="resetForm()">新しく予約する</button>
-      </div>
-    </div>
-  </div>
- 
-  <!-- ===== QRコード画面 ===== -->
-  <div id="screen-qr" class="screen">
-    <div class="card">
-      <div class="sec">予約フォームのQRコード</div>
-      <div class="qr-area">
-        <canvas id="qr-canvas" width="200" height="200"></canvas>
-        <p style="font-size:14px;font-weight:500">カウンセリング予約フォーム</p>
-        <p style="font-size:12px;color:#888">読み取ると予約フォームが開きます</p>
-        <p style="font-size:11px;color:#aaa;word-break:break-all;text-align:center" id="qr-url"></p>
-      </div>
-      <p style="font-size:12px;color:#aaa;margin-top:.875rem;line-height:1.6">スクリーンショットで保存してポスターや学校便りに印刷できます。</p>
-      <div class="btn-row" style="justify-content:flex-end;margin-top:.875rem">
-        <button class="btn btn-p" onclick="showScreen('screen-booking')">フォームに戻る</button>
-      </div>
-    </div>
-    <div style="text-align:right;margin-top:.5rem">
-      <button class="btn" style="font-size:12px;padding:6px 13px" onclick="showScreen('screen-admin-login')">管理画面へ（スタッフ専用）</button>
-    </div>
-  </div>
- 
-  <!-- ===== 管理画面ログイン ===== -->
-  <div id="screen-admin-login" class="screen">
-    <div class="card">
-      <div class="sec">管理画面ログイン</div>
-      <div class="pw-wrap">
-        <p style="font-size:14px;color:#888">スタッフ専用です。パスワードを入力してください。</p>
-        <input type="password" id="pw-input" placeholder="パスワード" style="width:200px;padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:15px;text-align:center">
-        <div class="err" id="err-pw" style="display:none">パスワードが違います</div>
-        <button class="btn btn-p" onclick="tryLogin()">ログイン</button>
-        <button class="btn" style="font-size:13px" onclick="showScreen('screen-booking')">予約フォームに戻る</button>
-      </div>
-    </div>
-  </div>
- 
-  <!-- ===== 管理画面 ===== -->
-  <div id="screen-admin" class="screen">
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
-        <p style="font-size:17px;font-weight:500">管理画面</p>
-        <div style="display:flex;gap:6px">
-          <button class="btn" style="font-size:12px;padding:6px 12px" onclick="renderAdmin()">更新</button>
-          <button class="btn" style="font-size:12px;padding:6px 12px" onclick="adminLogout()">ログアウト</button>
-        </div>
-      </div>
-      <div class="stat-grid" id="stat-grid"></div>
-      <div class="tabs">
-        <button class="tab on" onclick="adminTab('upcoming',this)">対応待ち</button>
-        <button class="tab" onclick="adminTab('all',this)">すべて</button>
-        <button class="tab" onclick="adminTab('done',this)">完了済み</button>
-      </div>
-      <div id="admin-list"></div>
-    </div>
-  </div>
- 
+
 </div>
- 
-<!-- QRコードライブラリ -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
- 
+
 <script>
-// ============================================================
-// ★ ここを書き換えてください ★
-// GASをデプロイしたあと発行されるURLを貼り付けてください
-// ============================================================
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbzIJcRa2dEkD45nGVwZ3jAy5hqdSUbGFpHlBvF5OoAVUvgsSCQQRx_pjGO2CNXstYrxHA/exec';
-// ============================================================
- 
-var ADMIN_PW = 'fujimura2026'; // 管理画面のパスワード（変更推奨）
- 
-// 予約可能日程（2026年。月は0始まり: 4=5月, 5=6月）
-var SCHEDULE = {
-  '2026-3-25': ['12:00','13:00','14:00'],
-  '2026-4-2':  ['12:00'],
-  '2026-4-9':  ['12:00'],
-  '2026-4-14': ['14:00','16:00'],
-  '2026-4-16': null,
-  '2026-4-23': ['12:00'],
-  '2026-4-30': ['11:00'],
-  '2026-5-6':  ['11:00'],
-  '2026-5-13': ['12:00','13:00','14:00'],
-  '2026-5-20': ['12:00','13:00','14:00'],
-  '2026-5-27': ['12:00','13:00','14:00']
-};
- 
-var APP = {
-  type:'', selDate:null, selDateKey:'', selTime:'',
-  adminFilter:'upcoming', calYear:2026, calMonth:3,
-  bookedMap:{}
-};
- 
-var MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
- 
-// ---------- 画面切替 ----------
+// ==========================================
+// 設定エリア
+// ==========================================
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzIJcRa2dEkD45nGVwZ3jAy5hqdSUbGFpHlBvF5OoAVUvgsSCQQRx_pjGO2CNXstYrxHA/exec"; 
+const ADMIN_PW = "Fujimura2026"; 
+// ==========================================
+
+let selectedType = "";
+
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active') });
-  document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
 }
- 
-function showStep(id) {
-  ['v0','v1','v2','v3','v4'].forEach(function(v){
-    document.getElementById(v).style.display = v===id ? 'block' : 'none';
-  });
-  if(id==='v3') buildCal();
+
+function setType(type) {
+    selectedType = type;
+    document.getElementById('type-s').classList.toggle('on', type === 'student');
+    document.getElementById('type-p').classList.toggle('on', type === 'parent');
 }
- 
-// ---------- STEP 0: 申込者選択 ----------
-function pickType(t) {
-  APP.type = t;
-  document.getElementById('chip-s').classList.toggle('on', t==='student');
-  document.getElementById('chip-p').classList.toggle('on', t==='parent');
-  document.getElementById('err-type').style.display = 'none';
-}
- 
-function step0next() {
-  if(!APP.type){ document.getElementById('err-type').style.display=''; return; }
-  document.getElementById('sf').style.display = APP.type==='student' ? 'block' : 'none';
-  document.getElementById('pf').style.display = APP.type==='parent'  ? 'block' : 'none';
-  showStep('v1');
-}
- 
-// ---------- STEP 1: 基本情報 ----------
-function step1next() {
-  if(APP.type==='student') {
-    var n=document.getElementById('s-name').value.trim();
-    var k=document.getElementById('s-kana').value.trim();
-    var g=document.getElementById('s-grade').value;
-    var c=document.getElementById('s-class').value;
-    if(!n||!k||!g||!c){ alert('必須項目をすべて入力してください'); return; }
-  }
-  if(APP.type==='parent') {
-    var pn=document.getElementById('p-name').value.trim();
-    var pk=document.getElementById('p-kana').value.trim();
-    var pr=document.getElementById('p-rel').value;
-    var pt=document.getElementById('p-tel').value.trim();
-    if(!pn||!pk||!pr||!pt){ alert('必須項目をすべて入力してください'); return; }
-  }
-  showStep('v2');
-}
- 
-// ---------- STEP 2: 相談内容 ----------
-function step2next() {
-  var types = [];
-  document.querySelectorAll('#consult-types .chip.on').forEach(function(c){ types.push(c.textContent.trim()) });
-  if(!types.length){ document.getElementById('err-consult').style.display=''; return; }
-  document.getElementById('err-consult').style.display = 'none';
-  showStep('v3');
-}
- 
-function toggleChip(el){ el.classList.toggle('on') }
-function toggleChipOther(el) {
-  el.classList.toggle('on');
-  document.getElementById('other-note-field').style.display = el.classList.contains('on') ? 'block' : 'none';
-}
-function pickOne(el,grp) {
-  document.getElementById(grp).querySelectorAll('.chip').forEach(function(c){ c.classList.remove('on') });
-  el.classList.add('on');
-}
- 
-// ---------- STEP 3: カレンダー ----------
-function dateKey(y,m,d){ return y+'-'+m+'-'+d }
- 
-function updateNavButtons() {
-  document.getElementById('btn-prev').disabled = (APP.calYear===2026 && APP.calMonth<=3);
-  document.getElementById('btn-next').disabled = (APP.calYear===2026 && APP.calMonth>=5);
-}
- 
-function prevMonth() {
-  APP.calMonth--;
-  if(APP.calMonth<0){ APP.calMonth=11; APP.calYear--; }
-  APP.selDate=null; APP.selTime='';
-  document.getElementById('slot-area').style.display='none';
-  buildCal();
-}
-function nextMonth() {
-  APP.calMonth++;
-  if(APP.calMonth>11){ APP.calMonth=0; APP.calYear++; }
-  APP.selDate=null; APP.selTime='';
-  document.getElementById('slot-area').style.display='none';
-  buildCal();
-}
- 
-async function buildCal() {
-  var y=APP.calYear, m=APP.calMonth;
-  document.getElementById('cal-month-label').textContent = y+'年'+MONTHS[m];
-  updateNavButtons();
- 
-  // スプレッドシートから予約済みデータを取得
-  APP.bookedMap = {};
-  try {
-    var res = await fetch(GAS_URL+'?action=getBooked');
-    if(res.ok) {
-      var data = await res.json();
-      data.forEach(function(row){ 
-        if(!APP.bookedMap[row.dateKey]) APP.bookedMap[row.dateKey]=[];
-        APP.bookedMap[row.dateKey].push(row.time);
-      });
-    }
-  } catch(e) {}
- 
-  var grid = document.getElementById('cal'); grid.innerHTML='';
-  var firstDow = new Date(y,m,1).getDay();
-  var lastDay  = new Date(y,m+1,0).getDate();
- 
-  for(var i=0;i<firstDow;i++){
-    var e=document.createElement('div'); e.className='cal-c'; grid.appendChild(e);
-  }
- 
-  for(var d=1;d<=lastDay;d++){
-    var cell=document.createElement('div');
-    var key=dateKey(y,m,d);
-    if(key in SCHEDULE){
-      var slots=SCHEDULE[key];
-      if(slots===null){
-        cell.className='cal-c'; cell.textContent=d;
-      } else {
-        var booked=APP.bookedMap[key]||[];
-        if(booked.length>=slots.length){
-          cell.className='cal-c full';
-          cell.innerHTML='<span style="font-size:10px">満</span><br>'+d;
-        } else {
-          cell.className='cal-c avail'; cell.textContent=d;
-          (function(day,k,sl){ cell.onclick=function(){ selectDate(day,k,sl,cell) } })(d,key,slots);
-        }
-      }
+
+function nextToInfo() {
+    if(!selectedType) return alert("区分を選択してください");
+    const container = document.getElementById('form-fields');
+    if(selectedType === 'student') {
+        container.innerHTML = `
+            <div class="field"><label>氏名</label><input id="name" placeholder="山田 太郎"></div>
+            <div class="field"><label>学年クラス</label><input id="info" placeholder="1年A組"></div>
+        `;
     } else {
-      cell.className='cal-c'; cell.textContent=d;
+        container.innerHTML = `
+            <div class="field"><label>保護者氏名</label><input id="name" placeholder="山田 花子"></div>
+            <div class="field"><label>お子様の名前・クラス</label><input id="info" placeholder="1年A組 山田太郎"></div>
+        `;
     }
-    grid.appendChild(cell);
-  }
+    showScreen('v1');
 }
- 
-function selectDate(d,key,slots,cell) {
-  document.querySelectorAll('.cal-c.sel').forEach(function(c){ c.classList.remove('sel'); c.classList.add('avail') });
-  cell.classList.remove('avail'); cell.classList.add('sel');
-  APP.selDate=d; APP.selDateKey=key; APP.selTime='';
- 
-  var dow=['日','月','火','水','木','金','土'][new Date(APP.calYear,APP.calMonth,d).getDay()];
-  document.getElementById('slot-label').textContent = APP.calYear+'年'+(APP.calMonth+1)+'月'+d+'日（'+dow+'）の空き枠';
-  document.getElementById('slot-area').style.display='block';
- 
-  var booked=APP.bookedMap[key]||[];
-  var slotsEl=document.getElementById('slots'); slotsEl.innerHTML='';
-  slots.forEach(function(t){
-    var s=document.createElement('div');
-    var endH=(parseInt(t)+1)+':00';
-    var label=t+'〜'+endH;
-    if(booked.indexOf(t)>=0){
-      s.className='slot full'; s.textContent=label;
-    } else {
-      s.className='slot'; s.textContent=label;
-      s.onclick=function(){
-        document.querySelectorAll('.slot:not(.full)').forEach(function(x){ x.classList.remove('sel') });
-        s.classList.add('sel'); APP.selTime=t;
-      };
-    }
-    slotsEl.appendChild(s);
-  });
-}
- 
-// ---------- 予約送信 ----------
+
+// 予約送信
 async function submitBooking() {
-  var err=document.getElementById('err-submit');
-  if(!APP.selDate){ err.textContent='日付を選択してください'; err.style.display=''; return; }
-  if(!APP.selTime){ err.textContent='時間を選択してください'; err.style.display=''; return; }
-  if(!document.getElementById('consent').checked){ err.textContent='同意のチェックが必要です'; err.style.display=''; return; }
-  err.style.display='none';
- 
-  var btn=document.getElementById('submit-btn');
-  btn.textContent='送信中...'; btn.disabled=true;
- 
-  var y=APP.calYear, m=APP.calMonth, d=APP.selDate;
-  var dow=['日','月','火','水','木','金','土'][new Date(y,m,d).getDay()];
-  var dateLabel=y+'年'+(m+1)+'月'+d+'日（'+dow+'）';
-  var timeLabel=APP.selTime+'〜'+(parseInt(APP.selTime)+1)+':00';
- 
-  var name = APP.type==='student'
-    ? (document.getElementById('s-name').value||'未入力')
-    : (document.getElementById('p-name').value||'未入力')+'（保護者）';
- 
-  var types=[];
-  document.querySelectorAll('#consult-types .chip.on').forEach(function(c){ types.push(c.textContent.trim()) });
-  var otherNote=document.getElementById('other-note').value.trim();
-  if(otherNote) types=types.map(function(t){ return t==='その他'?'その他（'+otherNote+'）':t });
-  var fmt=document.querySelector('#format .chip.on');
- 
-  var subInfo = APP.type==='student' ? {
-    grade:document.getElementById('s-grade').value,
-    cls:document.getElementById('s-class').value,
-    num:document.getElementById('s-num').value
-  } : {
-    kana:document.getElementById('p-kana').value,
-    rel:document.getElementById('p-rel').value,
-    tel:document.getElementById('p-tel').value,
-    mail:document.getElementById('p-mail').value,
-    child:document.getElementById('c-name').value,
-    childClass:document.getElementById('c-class').value,
-    know:(document.querySelector('#c-know .chip.on')||{textContent:''}).textContent
-  };
- 
-  var payload = {
-    action:'addBooking',
-    type:APP.type, name:name,
-    dateKey:APP.selDateKey, dateLabel:dateLabel,
-    time:APP.selTime, timeLabel:timeLabel,
-    consultTypes:types.join('・'),
-    format:fmt?fmt.textContent:'未指定',
-    info:JSON.stringify(subInfo),
-    createdAt:new Date().toLocaleDateString('ja-JP')
-  };
- 
-  try {
-    await fetch(GAS_URL, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
-  } catch(e) {}
- 
-  btn.textContent='予約を確定する'; btn.disabled=false;
- 
-  document.getElementById('confirm-detail').innerHTML=
-    '<div class="conf-row"><span class="conf-l">日時</span><span class="conf-v">'+dateLabel+' '+timeLabel+'</span></div>'+
-    '<div class="conf-row"><span class="conf-l">お名前</span><span class="conf-v">'+name+'</span></div>'+
-    '<div class="conf-row"><span class="conf-l">悩みの種類</span><span class="conf-v">'+types.join('・')+'</span></div>'+
-    '<div class="conf-row" style="border:none"><span class="conf-l">場所</span><span class="conf-v">カウンセリングルーム（本館2F）</span></div>';
-  showStep('v4');
-}
- 
-function resetForm() {
-  APP.type=''; APP.selDate=null; APP.selTime='';
-  document.getElementById('chip-s').classList.remove('on');
-  document.getElementById('chip-p').classList.remove('on');
-  document.getElementById('consent').checked=false;
-  document.querySelectorAll('.chip.on').forEach(function(c){ c.classList.remove('on') });
-  document.querySelectorAll('input[type=text],input[type=tel],input[type=email]').forEach(function(i){ i.value='' });
-  document.getElementById('other-note-field').style.display='none';
-  showStep('v0');
-}
- 
-// ---------- QRコード ----------
-function showQR() {
-  showScreen('screen-qr');
-  var url=window.location.href.split('?')[0];
-  document.getElementById('qr-url').textContent=url;
-  if(typeof QRCode!=='undefined'){
-    QRCode.toCanvas(document.getElementById('qr-canvas'),url,{width:200,margin:2,color:{dark:'#1a1a1a',light:'#ffffff'}},function(){});
-  }
-}
- 
-// ---------- 管理画面 ----------
-function tryLogin() {
-  if(document.getElementById('pw-input').value===ADMIN_PW){
-    document.getElementById('pw-input').value='';
-    document.getElementById('err-pw').style.display='none';
-    showScreen('screen-admin');
-    renderAdmin();
-  } else {
-    document.getElementById('err-pw').style.display='';
-  }
-}
-document.addEventListener('keydown',function(e){
-  if(e.key==='Enter' && document.getElementById('screen-admin-login').classList.contains('active')) tryLogin();
-});
- 
-function adminLogout() {
-  showScreen('screen-booking');
-}
- 
-async function renderAdmin() {
-  document.getElementById('admin-list').innerHTML='<div class="loading">読み込み中...</div>';
-  var bookings=[];
-  try {
-    var res=await fetch(GAS_URL+'?action=getAll');
-    if(res.ok) bookings=await res.json();
-  } catch(e) {
-    document.getElementById('admin-list').innerHTML='<div class="empty-msg">データ取得に失敗しました</div>';
-    return;
-  }
- 
-  var total=bookings.length;
-  var newC=bookings.filter(function(b){ return b.status!=='完了' }).length;
-  var doneC=bookings.filter(function(b){ return b.status==='完了' }).length;
-  document.getElementById('stat-grid').innerHTML=
-    '<div class="stat-card"><div class="stat-num">'+total+'</div><div class="stat-lbl">合計予約数</div></div>'+
-    '<div class="stat-card"><div class="stat-num" style="color:#185FA5">'+newC+'</div><div class="stat-lbl">対応待ち</div></div>'+
-    '<div class="stat-card"><div class="stat-num" style="color:#2d6a0a">'+doneC+'</div><div class="stat-lbl">完了済み</div></div>';
- 
-  var filtered=bookings.filter(function(b){
-    if(APP.adminFilter==='upcoming') return b.status!=='完了';
-    if(APP.adminFilter==='done')     return b.status==='完了';
-    return true;
-  });
-  filtered.sort(function(a,b){ return a.dateKey.localeCompare(b.dateKey)||a.time.localeCompare(b.time) });
- 
-  var list=document.getElementById('admin-list');
-  if(!filtered.length){ list.innerHTML='<div class="empty-msg">該当する予約はありません</div>'; return; }
- 
-  list.innerHTML=filtered.map(function(b){
-    var badge=b.status==='完了'
-      ?'<span class="badge badge-done">完了</span>'
-      :'<span class="badge badge-new">新規</span>';
-    var doneBtn=b.status!=='完了'
-      ?'<button class="btn btn-p" style="font-size:12px;padding:5px 12px;margin-top:8px" onclick="markDone(\''+b.row+'\',event)">完了にする</button>':'';
-    var info={};
-    try{ info=JSON.parse(b.info||'{}') }catch(e){}
-    var subLine='';
-    if(b.type==='student') subLine=(info.grade||'')+(info.cls||'')+(info.num?' '+info.num+'番':'');
-    else subLine='お子さん：'+(info.child||'')+(info.childClass?' '+info.childClass:'');
-    var extraRows='';
-    if(b.type==='parent'){
-      if(info.tel)  extraRows+='<div class="aitem-row"><span class="aitem-lbl">電話</span><span class="aitem-val">'+info.tel+'</span></div>';
-      if(info.mail) extraRows+='<div class="aitem-row"><span class="aitem-lbl">メール</span><span class="aitem-val">'+info.mail+'</span></div>';
-      if(info.know) extraRows+='<div class="aitem-row"><span class="aitem-lbl">面談認知</span><span class="aitem-val">'+info.know+'</span></div>';
+    const name = document.getElementById('name').value;
+    const date = document.getElementById('reserve-date').value;
+    if(!name || !date) return alert("すべて入力してください");
+
+    const payload = {
+        action: "add",
+        type: selectedType,
+        name: name,
+        info: document.getElementById('info').value,
+        date: date
+    };
+
+    try {
+        await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+        showScreen('v2');
+    } catch(e) {
+        alert("送信に失敗しました");
     }
-    return '<div class="aitem">'+
-      '<div class="aitem-head" onclick="toggleDetail(\'d'+b.row+'\')">'+
-        '<div>'+
-          '<p style="font-size:14px;font-weight:500">'+b.dateLabel+' '+b.timeLabel+'</p>'+
-          '<p style="font-size:12px;color:#888;margin-top:2px">'+b.name+(subLine?' ／ '+subLine:'')+'</p>'+
-        '</div>'+badge+
-      '</div>'+
-      '<div class="aitem-body" id="d'+b.row+'">'+
-        '<div class="aitem-row"><span class="aitem-lbl">悩みの種類</span><span class="aitem-val">'+b.consultTypes+'</span></div>'+
-        '<div class="aitem-row"><span class="aitem-lbl">面談形式</span><span class="aitem-val">'+b.format+'</span></div>'+
-        '<div class="aitem-row"><span class="aitem-lbl">申込日</span><span class="aitem-val">'+b.createdAt+'</span></div>'+
-        extraRows+
-        doneBtn+
-      '</div>'+
-    '</div>';
-  }).join('');
 }
- 
-function toggleDetail(id){
-  var el=document.getElementById(id);
-  if(el) el.classList.toggle('open');
+
+// QRコード表示
+function showQRScreen() {
+    showScreen('v_qr');
+    QRCode.toCanvas(document.getElementById('qrcode-canvas'), window.location.href, { width: 200 });
 }
- 
-async function markDone(row,e){
-  e.stopPropagation();
-  try{
-    await fetch(GAS_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'markDone',row:row})
+
+// 管理画面表示
+function showAdminLogin() {
+    const pw = prompt("管理者パスワードを入力してください");
+    if(pw === ADMIN_PW) {
+        loadAdminData();
+        showScreen('v_admin');
+    } else {
+        alert("パスワードが違います");
+    }
+}
+
+async function loadAdminData() {
+    const list = document.getElementById('admin-list');
+    list.innerHTML = "読み込み中...";
+    try {
+        const res = await fetch(`${GAS_URL}?action=getAll`);
+        const data = await res.json();
+        list.innerHTML = data.length ? "" : "予約はありません";
+        data.forEach(item => {
+            const div = document.createElement('div');
+            div.className = "admin-item";
+            div.innerHTML = `
+                <div>
+                    <div style="font-weight:bold">${item.name} (${item.date})</div>
+                    <div style="font-size:12px;color:#666">${item.info}</div>
+                </div>
+                <button class="btn btn-d" onclick="deleteItem(${item.id})">削除</button>
+            `;
+            list.appendChild(div);
+        });
+    } catch(e) {
+        list.innerHTML = "データの取得に失敗しました。";
+    }
+}
+
+async function deleteItem(id) {
+    if(!confirm("この予約を削除しますか？")) return;
+    await fetch(GAS_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "delete", id: id })
     });
-  }catch(e){}
-  renderAdmin();
+    loadAdminData();
 }
- 
-function adminTab(tab,el){
-  APP.adminFilter=tab;
-  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on') });
-  el.classList.add('on');
-  renderAdmin();
-}
- 
-// ---------- 初期化 ----------
-window.addEventListener('load',function(){
-  if(GAS_URL==='YOUR_GAS_URL_HERE'){
-    document.getElementById('setup-notice').style.display='block';
-  }
-});
 </script>
- 
 </body>
 </html>
