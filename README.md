@@ -293,7 +293,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP'
 <script>
 // ============================================================
 // ★ GASデプロイ後のURLをここに貼り付けてください ★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbwP39-9zーjStsXnGyt9SEXopud_58xM4rdXMvKc8bwuAbnpNOkudW2OfdhJuo8MAczt/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzay3HvyVpA1WYIpcBIAcQxPtXptrSuyiXA8l9JA3DQ8sx7XN1fDX-e1wSs0BL0sXLY/exec';
 // 管理画面パスワード（変更推奨）
 var ADMIN_PW = 'Fujimura2026';
 // ============================================================
