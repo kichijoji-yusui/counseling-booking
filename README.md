@@ -81,7 +81,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP'
 </head>
 <body>
 <div class="wrap">
-
+ 
   <!-- 予約フォーム -->
   <div id="screen-booking" class="screen active">
     <div id="v0" style="display:block">
@@ -102,7 +102,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP'
         <button class="btn btn-p" onclick="step0next()">次へ</button>
       </div>
     </div>
-
+ 
     <div id="v1" style="display:none">
       <div class="steps"><div class="sn done">1</div><div class="sl"></div><div class="sn active">2</div><div class="sl"></div><div class="sn">3</div><div class="sl"></div><div class="sn">4</div></div>
       <div class="card" id="sf">
@@ -160,7 +160,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP'
         <button class="btn btn-p" onclick="step1next()">次へ</button>
       </div>
     </div>
-
+ 
     <div id="v2" style="display:none">
       <div class="steps"><div class="sn done">1</div><div class="sl"></div><div class="sn done">2</div><div class="sl"></div><div class="sn active">3</div><div class="sl"></div><div class="sn">4</div></div>
       <div class="card">
@@ -171,7 +171,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP'
             <div class="chip-gl">対人関係</div>
             <div class="chip" onclick="toggleChip(this)">① 家族</div>
             <div class="chip" onclick="toggleChip(this)">② 友人</div>
-            <div class="chip" onclick="toggleChip(this)">③ 教師</div>
+            <div class="chip" onclick="toggleChip(this)">③ 先生</div>
             <div class="chip" onclick="toggleChip(this)">④ 恋愛</div>
             <div class="chip-gl">その他</div>
             <div class="chip" onclick="toggleChip(this)">⑤ 学習・進路</div>
@@ -199,7 +199,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP'
         <button class="btn btn-p" onclick="step2next()">次へ</button>
       </div>
     </div>
-
+ 
     <div id="v3" style="display:none">
       <div class="steps"><div class="sn done">1</div><div class="sl"></div><div class="sn done">2</div><div class="sl"></div><div class="sn done">3</div><div class="sl"></div><div class="sn active">4</div></div>
       <div class="card">
@@ -223,7 +223,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP'
           <div class="slots" id="slots"></div>
         </div>
         <div style="margin-top:1.25rem;border-top:1px solid #f0f0ec;padding-top:1rem">
-          <div class="consent-box">入力いただいた情報は、カウンセリングの実施・記録のみに使用します。お子さんの安全に関わる場合（虐待の疑い等）は、法令に基づき関係機関に情報を提供することがあります。</div>
+          <div class="consent-box" id="consent-student" style="display:none">入力いただいた情報は、カウンセリングの実施・記録のみに使用します。</div>
+          <div class="consent-box" id="consent-parent" style="display:none">入力いただいた情報は、カウンセリングの実施・記録のみに使用します。お子さんの安全に関わる場合（虐待の疑い等）は、法令に基づき関係機関に情報を提供することがあります。</div>
           <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;cursor:pointer">
             <input type="checkbox" id="consent" style="margin-top:3px;width:auto"> 個人情報の取り扱いに同意します
           </label>
@@ -235,7 +236,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP'
         <button class="btn btn-p" id="submit-btn" onclick="submitBooking()">予約を確定する</button>
       </div>
     </div>
-
+ 
     <div id="v4" style="display:none">
       <div class="card" style="text-align:center;padding:2rem">
         <div class="ok-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
@@ -246,7 +247,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP'
       </div>
     </div>
   </div>
-
+ 
   <!-- 管理画面ログイン -->
   <div id="screen-admin-login" class="screen">
     <div class="card">
@@ -261,7 +262,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP'
       </div>
     </div>
   </div>
-
+ 
   <!-- 管理画面 -->
   <div id="screen-admin" class="screen">
     <div class="card">
@@ -281,22 +282,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP'
       <div id="admin-list"></div>
     </div>
   </div>
-
+ 
   <!-- フッター：管理画面リンク -->
   <div style="text-align:center;margin-top:2rem">
     <button class="btn" style="font-size:12px;padding:5px 14px;color:#bbb;border-color:#e0e0dc"
       onclick="showScreen('screen-admin-login')">スタッフ管理画面</button>
   </div>
-
+ 
 </div>
 <script>
 // ============================================================
 // ★ GASデプロイ後のURLをここに貼り付けてください ★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbyaMIpySymn7BP1GoBRE9yMmlpdVo6-FnS0lQy3KCg6l2PR4gRuTyADHVlUzJfWzZNT/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbwP39-9z-jStsXnGyt9SEXopud_58xM4rdXMvKc8bwuAbnpNOkudW2OfdhJuo8MAczt/exec';
 // 管理画面パスワード（変更推奨）
 var ADMIN_PW = 'Fujimura2026';
 // ============================================================
-
+ 
 // 予約可能日程（月は0始まり: 3=4月, 4=5月, 5=6月）
 var SCHEDULE = {
   '2026-3-25': ['12:00','13:00','14:00'],
@@ -311,27 +312,27 @@ var SCHEDULE = {
   '2026-5-20': ['12:00','13:00','14:00'],
   '2026-5-27': ['12:00','13:00','14:00']
 };
-
+ 
 var APP={type:'',selDate:null,selDateKey:'',selTime:'',adminFilter:'upcoming',calYear:2026,calMonth:3,bookedMap:{}};
 var MONTHS=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-
+ 
 function gasGet(params){
   var qs=Object.keys(params).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(params[k])}).join('&');
   return fetch(GAS_URL+'?'+qs).then(function(r){return r.json()});
 }
-
+ 
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
   document.getElementById(id).classList.add('active');
 }
-
+ 
 function showStep(id){
   ['v0','v1','v2','v3','v4'].forEach(function(v){
     document.getElementById(v).style.display=v===id?'block':'none';
   });
   if(id==='v3')buildCal();
 }
-
+ 
 function pickType(t){
   APP.type=t;
   document.getElementById('chip-s').classList.toggle('on',t==='student');
@@ -342,9 +343,11 @@ function step0next(){
   if(!APP.type){document.getElementById('err-type').style.display='';return;}
   document.getElementById('sf').style.display=APP.type==='student'?'block':'none';
   document.getElementById('pf').style.display=APP.type==='parent'?'block':'none';
+  document.getElementById('consent-student').style.display=APP.type==='student'?'block':'none';
+  document.getElementById('consent-parent').style.display=APP.type==='parent'?'block':'none';
   showStep('v1');
 }
-
+ 
 function step1next(){
   if(APP.type==='student'){
     if(!document.getElementById('s-name').value.trim()||!document.getElementById('s-kana').value.trim()||
@@ -360,7 +363,7 @@ function step1next(){
   }
   showStep('v2');
 }
-
+ 
 function step2next(){
   var types=[];
   document.querySelectorAll('#consult-types .chip.on').forEach(function(c){types.push(c.textContent.trim())});
@@ -368,7 +371,7 @@ function step2next(){
   document.getElementById('err-consult').style.display='none';
   showStep('v3');
 }
-
+ 
 function toggleChip(el){el.classList.toggle('on')}
 function toggleChipOther(el){
   el.classList.toggle('on');
@@ -378,7 +381,7 @@ function pickOne(el,grp){
   document.getElementById(grp).querySelectorAll('.chip').forEach(function(c){c.classList.remove('on')});
   el.classList.add('on');
 }
-
+ 
 function dk(y,m,d){return y+'-'+m+'-'+d}
 function updateNav(){
   document.getElementById('btn-prev').disabled=(APP.calYear===2026&&APP.calMonth<=3);
@@ -392,7 +395,7 @@ function nextMonth(){
   APP.calMonth++;if(APP.calMonth>11){APP.calMonth=0;APP.calYear++;}
   APP.selDate=null;APP.selTime='';document.getElementById('slot-area').style.display='none';buildCal();
 }
-
+ 
 function buildCal(){
   var y=APP.calYear,m=APP.calMonth;
   document.getElementById('cal-month-label').textContent=y+'年'+MONTHS[m];
@@ -406,7 +409,7 @@ function buildCal(){
     renderCal(y,m);
   }).catch(function(){renderCal(y,m)});
 }
-
+ 
 function renderCal(y,m){
   var grid=document.getElementById('cal');grid.innerHTML='';
   var firstDow=new Date(y,m,1).getDay();
@@ -421,7 +424,7 @@ function renderCal(y,m){
         cell.className='cal-c';cell.textContent=d;
       } else {
         var booked=APP.bookedMap[key]||[];
-        if(booked.length>=slots.length){
+        if(booked.length>=1){
           cell.className='cal-c full';cell.innerHTML='<span style="font-size:10px">満</span><br>'+d;
         } else {
           cell.className='cal-c avail';cell.textContent=d;
@@ -434,7 +437,7 @@ function renderCal(y,m){
     grid.appendChild(cell);
   }
 }
-
+ 
 function selectDate(d,key,slots,cell){
   document.querySelectorAll('.cal-c.sel').forEach(function(c){c.classList.remove('sel');c.classList.add('avail')});
   cell.classList.remove('avail');cell.classList.add('sel');
@@ -458,7 +461,7 @@ function selectDate(d,key,slots,cell){
     slotsEl.appendChild(s);
   });
 }
-
+ 
 function submitBooking(){
   var err=document.getElementById('err-submit');
   if(!APP.selDate){err.textContent='日付を選択してください';err.style.display='';return;}
@@ -467,7 +470,7 @@ function submitBooking(){
   err.style.display='none';
   var btn=document.getElementById('submit-btn');
   btn.textContent='送信中...';btn.disabled=true;
-
+ 
   var y=APP.calYear,m=APP.calMonth,d=APP.selDate;
   var dow=['日','月','火','水','木','金','土'][new Date(y,m,d).getDay()];
   var dateLabel=y+'年'+(m+1)+'月'+d+'日（'+dow+'）';
@@ -490,7 +493,7 @@ function submitBooking(){
       child:document.getElementById('c-name').value,childClass:document.getElementById('c-class').value,
       know:ksel?ksel.textContent:''};
   }
-
+ 
   gasGet({action:'addBooking',type:APP.type,name:name,dateKey:APP.selDateKey,dateLabel:dateLabel,
     time:APP.selTime,timeLabel:timeLabel,consultTypes:types.join('・'),
     format:fmt?fmt.textContent:'未指定',info:JSON.stringify(info),
@@ -508,7 +511,7 @@ function submitBooking(){
     err.textContent='送信に失敗しました。もう一度お試しください。';err.style.display='';
   });
 }
-
+ 
 function resetForm(){
   APP.type='';APP.selDate=null;APP.selTime='';
   document.getElementById('chip-s').classList.remove('on');
@@ -519,7 +522,7 @@ function resetForm(){
   document.getElementById('other-note-field').style.display='none';
   showStep('v0');
 }
-
+ 
 function tryLogin(){
   if(document.getElementById('pw-input').value===ADMIN_PW){
     document.getElementById('pw-input').value='';
@@ -536,7 +539,7 @@ function adminTab(tab,el){
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});
   el.classList.add('on');renderAdmin();
 }
-
+ 
 function renderAdmin(){
   document.getElementById('admin-list').innerHTML='<div class="loading">読み込み中...</div>';
   gasGet({action:'getAll'}).then(function(bookings){
@@ -547,14 +550,14 @@ function renderAdmin(){
       '<div class="stat-card"><div class="stat-num">'+total+'</div><div class="stat-lbl">合計予約数</div></div>'+
       '<div class="stat-card"><div class="stat-num" style="color:#185FA5">'+newC+'</div><div class="stat-lbl">対応待ち</div></div>'+
       '<div class="stat-card"><div class="stat-num" style="color:#2d6a0a">'+doneC+'</div><div class="stat-lbl">完了済み</div></div>';
-
+ 
     var filtered=bookings.filter(function(b){
       if(APP.adminFilter==='upcoming')return b.status!=='完了';
       if(APP.adminFilter==='done')return b.status==='完了';
       return true;
     });
     filtered.sort(function(a,b){return a.dateKey.localeCompare(b.dateKey)||a.time.localeCompare(b.time)});
-
+ 
     var list=document.getElementById('admin-list');
     if(!filtered.length){list.innerHTML='<div class="empty-msg">該当する予約はありません</div>';return;}
     list.innerHTML=filtered.map(function(b){
@@ -588,7 +591,7 @@ function renderAdmin(){
     document.getElementById('admin-list').innerHTML='<div class="empty-msg">データ取得に失敗しました。GAS URLを確認してください。</div>';
   });
 }
-
+ 
 function toggleDetail(id){var el=document.getElementById(id);if(el)el.classList.toggle('open')}
 function markDone(row,e){
   e.stopPropagation();
