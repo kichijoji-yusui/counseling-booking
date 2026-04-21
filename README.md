@@ -204,7 +204,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP'
       <div class="steps"><div class="sn done">1</div><div class="sl"></div><div class="sn done">2</div><div class="sl"></div><div class="sn done">3</div><div class="sl"></div><div class="sn active">4</div></div>
       <div class="card">
         <div class="sec">希望日時を選択</div>
-        <p style="font-size:13px;color:#888;margin-bottom:.875rem">予約可能な日は青字の土曜日です（6月末まで）。取り消し線の枠は予約済みです。</p>
+        <p style="font-size:13px;color:#888;margin-bottom:.875rem">予約可能な日は青字の土曜日です（6月末まで）。予約済みの枠は表示されません。</p>
         <div class="cal-nav">
           <button id="btn-prev" onclick="prevMonth()">＜</button>
           <span style="font-size:14px;font-weight:500" id="cal-month-label"></span>
@@ -293,7 +293,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP'
 <script>
 // ============================================================
 // ★ GASデプロイ後のURLをここに貼り付けてください ★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbwP39-9z-jStsXnGyt9SEXopud_58xM4rdXMvKc8bwuAbnpNOkudW2OfdhJuo8MAczt/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbwP39-9zーjStsXnGyt9SEXopud_58xM4rdXMvKc8bwuAbnpNOkudW2OfdhJuo8MAczt/exec';
 // 管理画面パスワード（変更推奨）
 var ADMIN_PW = 'Fujimura2026';
 // ============================================================
@@ -424,11 +424,12 @@ function renderCal(y,m){
         cell.className='cal-c';cell.textContent=d;
       } else {
         var booked=APP.bookedMap[key]||[];
-        if(booked.length>=1){
+        var availSlots=slots.filter(function(t){return booked.indexOf(t)<0});
+        if(availSlots.length===0){
           cell.className='cal-c full';cell.innerHTML='<span style="font-size:10px">満</span><br>'+d;
         } else {
           cell.className='cal-c avail';cell.textContent=d;
-          (function(day,k,sl){cell.onclick=function(){selectDate(day,k,sl,cell)}})(d,key,slots);
+          (function(day,k,sl){cell.onclick=function(){selectDate(day,k,sl,cell)}})(d,key,availSlots);
         }
       }
     } else {
@@ -450,14 +451,12 @@ function selectDate(d,key,slots,cell){
   slots.forEach(function(t){
     var s=document.createElement('div');
     var label=t+'〜'+(parseInt(t)+1)+':00';
-    if(booked.indexOf(t)>=0){s.className='slot full';s.textContent=label;}
-    else{
-      s.className='slot';s.textContent=label;
-      s.onclick=function(){
-        document.querySelectorAll('.slot:not(.full)').forEach(function(x){x.classList.remove('sel')});
-        s.classList.add('sel');APP.selTime=t;
-      };
-    }
+    if(booked.indexOf(t)>=0){return;}
+    s.className='slot';s.textContent=label;
+    s.onclick=function(){
+      document.querySelectorAll('.slot').forEach(function(x){x.classList.remove('sel')});
+      s.classList.add('sel');APP.selTime=t;
+    };
     slotsEl.appendChild(s);
   });
 }
@@ -504,7 +503,7 @@ function submitBooking(){
       '<div class="conf-row"><span class="conf-l">日時</span><span class="conf-v">'+dateLabel+' '+timeLabel+'</span></div>'+
       '<div class="conf-row"><span class="conf-l">お名前</span><span class="conf-v">'+name+'</span></div>'+
       '<div class="conf-row"><span class="conf-l">悩みの種類</span><span class="conf-v">'+types.join('・')+'</span></div>'+
-      '<div class="conf-row" style="border:none"><span class="conf-l">場所</span><span class="conf-v">カウンセリングルーム（本館2F）</span></div>';
+      '<div class="conf-row" style="border:none"><span class="conf-l">場所</span><span class="conf-v">三鷹校舎2階保健室</span></div>';
     showStep('v4');
   }).catch(function(){
     btn.textContent='予約を確定する';btn.disabled=false;
