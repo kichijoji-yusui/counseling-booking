@@ -292,13 +292,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP'
 </div>
 <script>
 // ============================================================
-// ★ GASデプロイ後のURLをここに貼り付けてください ★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbz9JaP2-hnG-nII2Wma0wvo9nF8kLYxp9D6yxANKuOnvbkEdd9qvr7O40sSKkBUceh5ng/exec';
-// 管理画面パスワード（変更推奨）
-var ADMIN_PW = 'Fujimura2026';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbz20DwnMix9QK5d37qPT183briV2M4ROPf_5hPr4zc3KfuBjRfa_uREqXdS5FjSKfPLLQ/exec'; // 新しいデプロイURLをここに！
+var ADMIN_PW = 'Fujimura2026'; // ここを書き換える
 // ============================================================
 
-// 予約可能日程（月は0始まり: 3=4月, 4=5月, 5=6月）
 var SCHEDULE = {
   '2026-3-25': ['12:00','13:00','14:00'],
   '2026-4-2':  ['12:00'],
@@ -339,6 +336,7 @@ function pickType(t){
   document.getElementById('chip-p').classList.toggle('on',t==='parent');
   document.getElementById('err-type').style.display='none';
 }
+
 function step0next(){
   if(!APP.type){document.getElementById('err-type').style.display='';return;}
   document.getElementById('sf').style.display=APP.type==='student'?'block':'none';
@@ -415,23 +413,22 @@ function renderCal(y,m){
   var firstDow=new Date(y,m,1).getDay();
   var lastDay=new Date(y,m+1,0).getDate();
   for(var i=0;i<firstDow;i++){var e=document.createElement('div');e.className='cal-c';grid.appendChild(e);}
+  
   for(var d=1;d<=lastDay;d++){
     var cell=document.createElement('div');
     var key=dk(y,m,d);
-    if(key in SCHEDULE){
-      var slots=SCHEDULE[key];
-      if(slots===null){
-        cell.className='cal-c';cell.textContent=d;
-      } else {
-        var booked=APP.bookedMap[key]||[];
-        var availSlots=slots.filter(function(t){return booked.indexOf(t)<0});
+    
+    // 【バグ修正】SCHEDULEにあり、かつ枠が存在する場合のみ青くする
+    if(SCHEDULE.hasOwnProperty(key) && SCHEDULE[key] !== null && Array.isArray(SCHEDULE[key])){
+        var slots = SCHEDULE[key];
+        var booked = APP.bookedMap[key]||[];
+        var availSlots = slots.filter(function(t){return booked.indexOf(t)<0});
         if(availSlots.length===0){
           cell.className='cal-c full';cell.innerHTML='<span style="font-size:10px">満</span><br>'+d;
         } else {
           cell.className='cal-c avail';cell.textContent=d;
           (function(day,k,sl){cell.onclick=function(){selectDate(day,k,sl,cell)}})(d,key,availSlots);
         }
-      }
     } else {
       cell.className='cal-c';cell.textContent=d;
     }
@@ -497,8 +494,13 @@ function submitBooking(){
     time:APP.selTime,timeLabel:timeLabel,consultTypes:types.join('・'),
     format:fmt?fmt.textContent:'未指定',info:JSON.stringify(info),
     createdAt:new Date().toLocaleDateString('ja-JP')
-  }).then(function(){
+  }).then(function(res){
     btn.textContent='予約を確定する';btn.disabled=false;
+    if(res.status === 'error'){
+        alert(res.msg);
+        location.reload();
+        return;
+    }
     document.getElementById('confirm-detail').innerHTML=
       '<div class="conf-row"><span class="conf-l">日時</span><span class="conf-v">'+dateLabel+' '+timeLabel+'</span></div>'+
       '<div class="conf-row"><span class="conf-l">お名前</span><span class="conf-v">'+name+'</span></div>'+
@@ -511,9 +513,10 @@ function submitBooking(){
   });
 }
 
+// 【1枠1予約の要】完了後にリロードして最新状態にする
 function resetForm(){
-location.reload();
-  }
+  location.reload();
+}
 
 function tryLogin(){
   if(document.getElementById('pw-input').value===ADMIN_PW){
@@ -522,9 +525,6 @@ function tryLogin(){
     showScreen('screen-admin');renderAdmin();
   } else {document.getElementById('err-pw').style.display='';}
 }
-document.addEventListener('keydown',function(e){
-  if(e.key==='Enter'&&document.getElementById('screen-admin-login').classList.contains('active'))tryLogin();
-});
 function adminLogout(){showScreen('screen-booking')}
 function adminTab(tab,el){
   APP.adminFilter=tab;
@@ -580,7 +580,7 @@ function renderAdmin(){
           extra+doneBtn+'</div></div>';
     }).join('');
   }).catch(function(){
-    document.getElementById('admin-list').innerHTML='<div class="empty-msg">データ取得に失敗しました。GAS URLを確認してください。</div>';
+    document.getElementById('admin-list').innerHTML='<div class="empty-msg">データ取得に失敗しました。</div>';
   });
 }
 
